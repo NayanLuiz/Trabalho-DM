@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'support/fake_hero_repository.dart';
 
 void main() {
-  testWidgets('lista agentes e abre detalhe provisório', (tester) async {
+  testWidgets('lista agentes e abre detalhes', (tester) async {
     final heroes = loadTestHeroes(2);
     final repository = FakeHeroRepository(heroes);
     await tester.pumpWidget(
@@ -25,7 +25,8 @@ void main() {
 
     await tester.tap(find.text(heroes.first.name));
     await tester.pumpAndSettle();
-    expect(find.text('Detalhes completos na próxima fase.'), findsOneWidget);
+    expect(find.text('Atributos'), findsOneWidget);
+    expect(find.text('Aparência'), findsOneWidget);
   });
 
   testWidgets('busca próxima página ao rolar', (tester) async {
