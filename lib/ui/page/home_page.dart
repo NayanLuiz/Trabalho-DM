@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'daily_contract_page.dart';
 import 'heroes_list_page.dart';
+import 'squad_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -60,7 +61,12 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
-                    onPressed: () => _openSection(context, 'Meu Esquadrão'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SquadPage(),
+                      ),
+                    ),
                     icon: const Icon(Icons.groups),
                     label: const Text('MEU ESQUADRÃO'),
                   ),

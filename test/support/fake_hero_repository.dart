@@ -22,6 +22,7 @@ class FakeHeroRepository implements HeroRepository {
   final List<int> requestedPages = [];
   final Set<int> recruitedIds;
   int recruitCalls = 0;
+  int squadReads = 0;
 
   FakeHeroRepository(this.heroes, {Set<int>? initialSquadIds})
     : recruitedIds = {...?initialSquadIds};
@@ -41,6 +42,12 @@ class FakeHeroRepository implements HeroRepository {
   Future<domain.Hero> getDailyHero() async {
     if (heroes.isEmpty) throw StateError('Nenhum agente disponível.');
     return heroes.first;
+  }
+
+  @override
+  Future<List<domain.Hero>> getSquad() async {
+    squadReads++;
+    return heroes.where((hero) => recruitedIds.contains(hero.id)).toList();
   }
 
   @override

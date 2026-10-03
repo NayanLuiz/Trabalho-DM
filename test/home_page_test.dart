@@ -30,6 +30,8 @@ void main() {
         expect(find.text(hero.name), findsOneWidget);
       } else if (section == 'CONTRATO DIÁRIO') {
         expect(find.text('Recrutar para o Esquadrão'), findsOneWidget);
+      } else if (section == 'MEU ESQUADRÃO') {
+        expect(find.text('Nenhum agente no esquadrão.'), findsOneWidget);
       } else {
         expect(find.text('Em desenvolvimento'), findsOneWidget);
       }
