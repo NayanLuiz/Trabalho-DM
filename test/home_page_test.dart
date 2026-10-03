@@ -8,9 +8,10 @@ import 'support/fake_hero_repository.dart';
 
 void main() {
   testWidgets('abre e retorna das quatro opções da Home', (tester) async {
+    final hero = loadTestHeroes(1).first;
     await tester.pumpWidget(
       Provider<HeroRepository>.value(
-        value: FakeHeroRepository([]),
+        value: FakeHeroRepository([hero]),
         child: const MaterialApp(home: HomePage()),
       ),
     );
@@ -26,7 +27,9 @@ void main() {
       await tester.tap(find.text(section));
       await tester.pumpAndSettle();
       if (section == 'AGENTES') {
-        expect(find.text('Nenhum agente encontrado.'), findsOneWidget);
+        expect(find.text(hero.name), findsOneWidget);
+      } else if (section == 'CONTRATO DIÁRIO') {
+        expect(find.text('Recrutar para o Esquadrão'), findsOneWidget);
       } else {
         expect(find.text('Em desenvolvimento'), findsOneWidget);
       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'daily_contract_page.dart';
 import 'heroes_list_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -48,7 +49,12 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
-                    onPressed: () => _openSection(context, 'Contrato Diário'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const DailyContractPage(),
+                      ),
+                    ),
                     icon: const Icon(Icons.today),
                     label: const Text('CONTRATO DIÁRIO'),
                   ),

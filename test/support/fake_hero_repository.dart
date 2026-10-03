@@ -20,8 +20,11 @@ List<domain.Hero> loadTestHeroes(int count) {
 class FakeHeroRepository implements HeroRepository {
   final List<domain.Hero> heroes;
   final List<int> requestedPages = [];
+  final Set<int> recruitedIds;
+  int recruitCalls = 0;
 
-  FakeHeroRepository(this.heroes);
+  FakeHeroRepository(this.heroes, {Set<int>? initialSquadIds})
+    : recruitedIds = {...?initialSquadIds};
 
   @override
   Future<List<domain.Hero>> getHeroes({
@@ -32,6 +35,26 @@ class FakeHeroRepository implements HeroRepository {
     final start = (page - 1) * limit;
     if (start >= heroes.length) return [];
     return heroes.skip(start).take(limit).toList();
+  }
+
+  @override
+  Future<domain.Hero> getDailyHero() async {
+    if (heroes.isEmpty) throw StateError('Nenhum agente disponível.');
+    return heroes.first;
+  }
+
+  @override
+  Future<int> getSquadCount() async => recruitedIds.length;
+
+  @override
+  Future<bool> isHeroInSquad(int id) async => recruitedIds.contains(id);
+
+  @override
+  Future<void> recruitHero(int id) async {
+    recruitCalls++;
+    if (recruitedIds.contains(id)) throw StateError('Agente duplicado.');
+    if (recruitedIds.length >= 15) throw StateError('Esquadrão cheio.');
+    recruitedIds.add(id);
   }
 
   @override
