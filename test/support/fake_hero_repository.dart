@@ -22,6 +22,7 @@ class FakeHeroRepository implements HeroRepository {
   final List<int> requestedPages = [];
   final Set<int> recruitedIds;
   int recruitCalls = 0;
+  int dismissCalls = 0;
   int squadReads = 0;
 
   FakeHeroRepository(this.heroes, {Set<int>? initialSquadIds})
@@ -62,6 +63,12 @@ class FakeHeroRepository implements HeroRepository {
     if (recruitedIds.contains(id)) throw StateError('Agente duplicado.');
     if (recruitedIds.length >= 15) throw StateError('Esquadrão cheio.');
     recruitedIds.add(id);
+  }
+
+  @override
+  Future<void> dismissHero(int id) async {
+    dismissCalls++;
+    recruitedIds.remove(id);
   }
 
   @override

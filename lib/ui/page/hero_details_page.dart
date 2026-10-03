@@ -6,13 +6,22 @@ import '../widgets/powerstat_widget.dart';
 
 class HeroDetailsPage extends StatelessWidget {
   final domain.Hero hero;
+  final Widget? bottomAction;
 
-  const HeroDetailsPage({super.key, required this.hero});
+  const HeroDetailsPage({super.key, required this.hero, this.bottomAction});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(hero.name)),
+      bottomNavigationBar: bottomAction == null
+          ? null
+          : SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: bottomAction,
+              ),
+            ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Center(

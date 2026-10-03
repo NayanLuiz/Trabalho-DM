@@ -35,6 +35,7 @@ void main() {
     expect(find.textContaining(hero.occupation), findsOneWidget);
     expect(find.textContaining(hero.groupAffiliation), findsOneWidget);
     expect(find.textContaining(hero.relatives), findsOneWidget);
+    expect(find.text('DISPENSAR DO ESQUADRÃO'), findsNothing);
   });
 
   testWidgets('barra limita desenho a 100 sem esconder bônus', (tester) async {

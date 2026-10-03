@@ -57,4 +57,33 @@ void main() {
 
     expect(find.text('Agentes: 15/15'), findsOneWidget);
   });
+
+  testWidgets('cancelar mantém agente; confirmar dispensa e atualiza lista', (
+    tester,
+  ) async {
+    final hero = loadTestHeroes(1).first;
+    final repository = FakeHeroRepository([hero], initialSquadIds: {hero.id});
+    await tester.pumpWidget(squad(repository));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(hero.name));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('DISPENSAR DO ESQUADRÃO'));
+    await tester.pumpAndSettle();
+    expect(find.text('Deseja dispensar este agente?'), findsOneWidget);
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
+    expect(repository.recruitedIds, contains(hero.id));
+    expect(repository.dismissCalls, 0);
+    expect(find.text('DISPENSAR DO ESQUADRÃO'), findsOneWidget);
+
+    await tester.tap(find.text('DISPENSAR DO ESQUADRÃO'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Dispensar'));
+    await tester.pumpAndSettle();
+    expect(repository.recruitedIds, isNot(contains(hero.id)));
+    expect(repository.dismissCalls, 1);
+    expect(find.text('Nenhum agente no esquadrão.'), findsOneWidget);
+    expect(repository.squadReads, 2);
+  });
 }
