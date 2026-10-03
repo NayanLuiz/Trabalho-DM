@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_repository_example/ui/page/movies_list_page.dart';
+import 'package:flutter_repository_example/ui/page/home_page.dart';
 
 import 'package:provider/provider.dart';
 
 import 'core/di/configure_providers.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final data = await ConfigureProviders.createDependencyTree();
@@ -24,12 +24,12 @@ class AppRoot extends StatelessWidget {
       providers: data.providers,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'The Movie Database',
+        title: 'Agência de Heróis',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MoviesListPage(),
+        home: const HomePage(),
       ),
     );
   }
