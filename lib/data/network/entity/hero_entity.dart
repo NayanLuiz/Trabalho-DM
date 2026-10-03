@@ -2,8 +2,15 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'hero_entity.g.dart';
 
+int _readId(Object? value) {
+  if (value is int) return value;
+  if (value is String) return int.parse(value);
+  throw FormatException('ID de herói inválido: $value');
+}
+
 @JsonSerializable()
 class HeroEntity {
+  @JsonKey(fromJson: _readId)
   final int id;
   final String name;
   final String slug;

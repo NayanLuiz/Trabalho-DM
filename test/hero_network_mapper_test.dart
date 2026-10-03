@@ -22,4 +22,14 @@ void main() {
     }
     expect(records.length, greaterThan(500));
   });
+
+  test('aceita ID textual retornado pelo json-server', () {
+    final source = File('server/original/all.json').readAsStringSync();
+    final first = (jsonDecode(source) as List<dynamic>).first
+        as Map<String, dynamic>;
+    final response = Map<String, dynamic>.from(first)
+      ..['id'] = first['id'].toString();
+    final hero = NetworkMapper().toHero(HeroEntity.fromJson(response));
+    expect(hero.id, first['id']);
+  });
 }

@@ -7,7 +7,7 @@ part of 'hero_entity.dart';
 // **************************************************************************
 
 HeroEntity _$HeroEntityFromJson(Map<String, dynamic> json) => HeroEntity(
-  id: (json['id'] as num).toInt(),
+  id: _readId(json['id']),
   name: json['name'] as String,
   slug: json['slug'] as String,
   powerstats: PowerstatsEntity.fromJson(
