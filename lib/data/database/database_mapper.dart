@@ -1,52 +1,76 @@
+import '../../domain/hero.dart';
+import 'entity/hero_database_entity.dart';
 
+class DatabaseMapper {
+  Hero toHero(HeroDatabaseEntity e) => Hero(
+    id: e.id,
+    name: e.name,
+    slug: e.slug,
+    intelligence: e.intelligence,
+    strength: e.strength,
+    speed: e.speed,
+    durability: e.durability,
+    power: e.power,
+    combat: e.combat,
+    gender: e.gender,
+    race: e.race,
+    height: e.height,
+    weight: e.weight,
+    eyeColor: e.eyeColor,
+    hairColor: e.hairColor,
+    fullName: e.fullName,
+    alterEgos: e.alterEgos,
+    aliases: e.aliases,
+    placeOfBirth: e.placeOfBirth,
+    firstAppearance: e.firstAppearance,
+    publisher: e.publisher,
+    alignment: e.alignment,
+    occupation: e.occupation,
+    base: e.base,
+    groupAffiliation: e.groupAffiliation,
+    relatives: e.relatives,
+    imageXs: e.imageXs,
+    imageSm: e.imageSm,
+    imageMd: e.imageMd,
+    imageLg: e.imageLg,
+  );
 
+  List<Hero> toHeroes(List<HeroDatabaseEntity> entities) =>
+      entities.map(toHero).toList();
 
-import '../../domain/exception/mapper_exception.dart';
-import '../../domain/movie.dart';
-import 'entity/movie_database_entity.dart';
+  HeroDatabaseEntity toHeroDatabaseEntity(Hero h) => HeroDatabaseEntity(
+    id: h.id,
+    name: h.name,
+    slug: h.slug,
+    intelligence: h.intelligence,
+    strength: h.strength,
+    speed: h.speed,
+    durability: h.durability,
+    power: h.power,
+    combat: h.combat,
+    gender: h.gender,
+    race: h.race,
+    height: h.height,
+    weight: h.weight,
+    eyeColor: h.eyeColor,
+    hairColor: h.hairColor,
+    fullName: h.fullName,
+    alterEgos: h.alterEgos,
+    aliases: h.aliases,
+    placeOfBirth: h.placeOfBirth,
+    firstAppearance: h.firstAppearance,
+    publisher: h.publisher,
+    alignment: h.alignment,
+    occupation: h.occupation,
+    base: h.base,
+    groupAffiliation: h.groupAffiliation,
+    relatives: h.relatives,
+    imageXs: h.imageXs,
+    imageSm: h.imageSm,
+    imageMd: h.imageMd,
+    imageLg: h.imageLg,
+  );
 
-class DatabaseMapper{
-
-  Movie toMovie(MovieDatabaseEntity entity){
-    try{
-      return Movie(
-          title: entity.title,
-          year: entity.year,
-          extract: entity.extract,
-          imgUrl: entity.imageUrl
-      );
-    }catch (e){
-      throw MapperException<MovieDatabaseEntity, Movie>(e.toString());
-    }
-  }
-
-  List<Movie> toMovies(List<MovieDatabaseEntity> entities){
-    final List<Movie> movies = [];
-    for (var movieEntity in entities) {
-      movies.add(toMovie(movieEntity));
-    }
-    return movies;
-  }
-
-  MovieDatabaseEntity toMovieDatabaseEntity(Movie movie){
-    try{
-      return MovieDatabaseEntity(
-          id: null,
-          title: movie.title,
-          year: movie.year,
-          extract: movie.extract,
-          imageUrl: movie.imgUrl
-      );
-    }catch (e){
-      throw MapperException<MovieDatabaseEntity, Movie>(e.toString());
-    }
-  }
-
-  List<MovieDatabaseEntity> toMovieDatabaseEntities(List<Movie> movies){
-    final List<MovieDatabaseEntity> movieDatabaseEntities = [];
-    for (var m in movies) {
-      movieDatabaseEntities.add(toMovieDatabaseEntity(m));
-    }
-    return movieDatabaseEntities;
-  }
+  List<HeroDatabaseEntity> toHeroDatabaseEntities(List<Hero> heroes) =>
+      heroes.map(toHeroDatabaseEntity).toList();
 }
