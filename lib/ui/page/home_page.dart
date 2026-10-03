@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'heroes_list_page.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -35,7 +37,12 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton.icon(
-                    onPressed: () => _openSection(context, 'Agentes'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const HeroesListPage(),
+                      ),
+                    ),
                     icon: const Icon(Icons.people),
                     label: const Text('AGENTES'),
                   ),
