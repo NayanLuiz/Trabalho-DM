@@ -33,7 +33,10 @@ void main() {
       } else if (section == 'MEU ESQUADRÃO') {
         expect(find.text('Nenhum agente no esquadrão.'), findsOneWidget);
       } else {
-        expect(find.text('Em desenvolvimento'), findsOneWidget);
+        expect(
+          find.text('Você precisa de pelo menos 5 agentes.'),
+          findsOneWidget,
+        );
       }
 
       await tester.pageBack();

@@ -2,19 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'daily_contract_page.dart';
 import 'heroes_list_page.dart';
+import 'mission_first_round_page.dart';
 import 'squad_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  void _openSection(BuildContext context, String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute<void>(
-        builder: (_) => _PendingSectionPage(title: title),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +64,12 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
-                    onPressed: () => _openSection(context, 'Missões'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const MissionFirstRoundPage(),
+                      ),
+                    ),
                     icon: const Icon(Icons.flag),
                     label: const Text('MISSÕES'),
                   ),
@@ -82,20 +79,6 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _PendingSectionPage extends StatelessWidget {
-  final String title;
-
-  const _PendingSectionPage({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: const Center(child: Text('Em desenvolvimento')),
     );
   }
 }
