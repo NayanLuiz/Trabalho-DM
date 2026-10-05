@@ -65,11 +65,16 @@ class HeroRepositoryImpl implements HeroRepository {
     }
     final heroes = networkMapper.toHeroes(remoteRows);
     await heroDao.insertAll(databaseMapper.toHeroDatabaseEntities(heroes));
+    // Os dados recebidos não substituem bônus já salvos no SQLite.
+    final savedRows = await heroDao.selectAll();
+    final savedById = {
+      for (final row in savedRows) row.id: databaseMapper.toHero(row),
+    };
     await preferences.setStringList(
       pageKey,
       heroes.map((hero) => hero.id.toString()).toList(),
     );
-    return heroes;
+    return [for (final hero in heroes) savedById[hero.id] ?? hero];
   }
 
   @override
