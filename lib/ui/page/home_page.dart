@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'daily_contract_page.dart';
 import 'heroes_list_page.dart';
-import 'mission_first_round_page.dart';
+import 'mission_page.dart';
 import 'squad_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute<void>(
-                        builder: (_) => const MissionFirstRoundPage(),
+                        builder: (_) => const MissionPage(),
                       ),
                     ),
                     icon: const Icon(Icons.flag),

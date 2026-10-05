@@ -24,6 +24,8 @@ class FakeHeroRepository implements HeroRepository {
   int recruitCalls = 0;
   int dismissCalls = 0;
   int squadReads = 0;
+  int updateCalls = 0;
+  domain.Hero? updatedHero;
 
   FakeHeroRepository(this.heroes, {Set<int>? initialSquadIds})
     : recruitedIds = {...?initialSquadIds};
@@ -69,6 +71,15 @@ class FakeHeroRepository implements HeroRepository {
   Future<void> dismissHero(int id) async {
     dismissCalls++;
     recruitedIds.remove(id);
+  }
+
+  @override
+  Future<void> updateHero(domain.Hero hero) async {
+    final index = heroes.indexWhere((saved) => saved.id == hero.id);
+    if (index < 0) throw StateError('Agente não encontrado.');
+    heroes[index] = hero;
+    updatedHero = hero;
+    updateCalls++;
   }
 
   @override
