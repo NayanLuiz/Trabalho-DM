@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/hero.dart';
@@ -15,6 +17,8 @@ class HeroRepositoryImpl implements HeroRepository {
   static const _dailyDateKey = 'daily_hero_date';
   static const _dailyIdKey = 'daily_hero_id';
   static const maxSquadSize = 15;
+
+  bool _useLocalUntilRestart = false;
 
   final ApiClient apiClient;
   final NetworkMapper networkMapper;
@@ -56,12 +60,31 @@ class HeroRepositoryImpl implements HeroRepository {
     final offset = (page - 1) * limit;
     final localRows = await heroDao.selectAll(limit: limit, offset: offset);
 
+    if (_useLocalUntilRestart) {
+      return databaseMapper.toHeroes(localRows);
+    }
+
     late final List<HeroEntity> remoteRows;
     try {
       remoteRows = await apiClient.getHeroes(page: page, limit: limit);
     } catch (_) {
-      if (localRows.isNotEmpty) return databaseMapper.toHeroes(localRows);
-      rethrow;
+      if (localRows.isEmpty) {
+        // Primeira instalação em outro celular: preencher SQLite com o mesmo
+        // JSON servido pelo json-server, sem criar outra camada de dados.
+        await _seedBundledHeroes();
+      }
+      final rows = localRows.isEmpty
+          ? await heroDao.selectAll(limit: limit, offset: offset)
+          : localRows;
+      if (rows.isEmpty && await heroDao.count() == 0) rethrow;
+      _useLocalUntilRestart = true;
+      if (localRows.isEmpty) {
+        await preferences.setStringList(
+          pageKey,
+          rows.map((hero) => hero.id.toString()).toList(),
+        );
+      }
+      return databaseMapper.toHeroes(rows);
     }
     final heroes = networkMapper.toHeroes(remoteRows);
     await heroDao.insertAll(databaseMapper.toHeroDatabaseEntities(heroes));
@@ -75,6 +98,19 @@ class HeroRepositoryImpl implements HeroRepository {
       heroes.map((hero) => hero.id.toString()).toList(),
     );
     return [for (final hero in heroes) savedById[hero.id] ?? hero];
+  }
+
+  Future<void> _seedBundledHeroes() async {
+    final json = jsonDecode(
+      await rootBundle.loadString('server/db.json'),
+    ) as Map<String, dynamic>;
+    final rows = json['heroes'] as List<dynamic>;
+    final heroes = networkMapper.toHeroes(
+      rows
+          .map((row) => HeroEntity.fromJson(row as Map<String, dynamic>))
+          .toList(),
+    );
+    await heroDao.insertAll(databaseMapper.toHeroDatabaseEntities(heroes));
   }
 
   @override

@@ -25,7 +25,8 @@ O emulador acessa a API em `http://10.0.2.2:3000`. Os dados originais estão em
   A comparação gera vitória, derrota ou empate. Vitória em mais da metade dos
   rounds concede `+1` aleatório a um agente vencedor, salvo no SQLite.
 
-O cache permite consultar **heróis já carregados** sem a API. Imagens remotas
+Sem acesso à API, uma instalação nova carrega o JSON incluído no APK para o
+SQLite. O cache permite consultar os heróis sem servidor. Imagens remotas
 podem mostrar o ícone de substituição quando não estiverem em cache.
 
 ## Testar
@@ -37,7 +38,7 @@ Teste manual offline:
 1. Com `json-server` ligado, abra Agentes, role páginas e veja detalhes.
 2. Feche o aplicativo e pare o servidor.
 3. Abra novamente e confira Agentes, detalhes, Contrato Diário, Esquadrão e
-   Missões. Só páginas/heróis já carregados estarão disponíveis.
+   Missões. Em instalação nova sem servidor, o catálogo é carregado do APK.
 
 ## Roteiro curto para apresentação
 

@@ -63,6 +63,9 @@ class _MemoryHeroDao extends HeroDao {
   Future<void> update(HeroDatabaseEntity hero) async {
     rows[hero.id] = hero;
   }
+
+  @override
+  Future<int> count() async => rows.length;
 }
 
 class _MemorySquadDao extends SquadDao {
@@ -156,5 +159,46 @@ void main() {
     client.online = true;
     final refetched = await offlineRepo.getHeroes(page: 1, limit: 1000);
     expect(refetched.first.strength, upgraded.strength);
+  });
+
+  test('instalação nova sem servidor carrega heróis do APK', () async {
+    SharedPreferences.setMockInitialValues({});
+    final client = api()..online = false;
+    final heroDao = _MemoryHeroDao();
+    final squadDao = _MemorySquadDao();
+    final offlineRepo = repository(client, heroDao, squadDao);
+
+    final firstPage = await offlineRepo.getHeroes(page: 1, limit: 10);
+    expect(firstPage.length, 10);
+    expect(await heroDao.count(), 563);
+    expect((await offlineRepo.getHeroes(page: 2, limit: 10)).length, 10);
+    expect(
+      (await offlineRepo.getHeroById(firstPage.first.id)).name,
+      firstPage.first.name,
+    );
+    final daily = await offlineRepo.getDailyHero();
+    expect((await offlineRepo.getDailyHero()).id, daily.id);
+    await offlineRepo.recruitHero(firstPage.first.id);
+    expect(await offlineRepo.getSquadCount(), 1);
+  });
+
+  test('cache parcial recebe restante dos heróis quando API cai', () async {
+    SharedPreferences.setMockInitialValues({});
+    final client = api();
+    final heroDao = _MemoryHeroDao();
+    final offlineRepo = repository(client, heroDao, _MemorySquadDao());
+
+    final firstPage = await offlineRepo.getHeroes(page: 1, limit: 3);
+    expect(firstPage.length, 3);
+    await offlineRepo.updateHero(
+      firstPage.first.copyWith(strength: firstPage.first.strength + 1),
+    );
+    client.online = false;
+    expect((await offlineRepo.getHeroes(page: 2, limit: 3)).length, 3);
+    expect(await heroDao.count(), 563);
+    expect(
+      (await offlineRepo.getHeroById(firstPage.first.id)).strength,
+      firstPage.first.strength + 1,
+    );
   });
 }
