@@ -144,8 +144,8 @@ void main() {
       upgraded.strength,
     );
     expect((await offlineRepo.getSquad()).length, 5);
-    final daily = await offlineRepo.getDailyHero();
-    expect((await offlineRepo.getDailyHero()).id, daily.id);
+    final daily = await tester.runAsync(offlineRepo.getDailyHero);
+    expect((await offlineRepo.getDailyHero()).id, daily!.id);
 
     await tester.pumpWidget(
       Provider<HeroRepository>.value(
@@ -199,6 +199,26 @@ void main() {
     expect(
       (await offlineRepo.getHeroById(firstPage.first.id)).strength,
       firstPage.first.strength + 1,
+    );
+  });
+
+  test('falha da API completa página local parcial sem perder bônus', () async {
+    SharedPreferences.setMockInitialValues({});
+    final client = api();
+    final heroDao = _MemoryHeroDao();
+    final offlineRepo = repository(client, heroDao, _MemorySquadDao());
+
+    final loaded = await offlineRepo.getHeroes(page: 1, limit: 3);
+    final boosted = loaded.first.copyWith(strength: loaded.first.strength + 1);
+    await offlineRepo.updateHero(boosted);
+
+    client.online = false;
+    final catalog = await offlineRepo.getHeroes(page: 1, limit: 1000);
+    expect(catalog.length, 563);
+    expect(await heroDao.count(), 563);
+    expect(
+      catalog.firstWhere((hero) => hero.id == boosted.id).strength,
+      boosted.strength,
     );
   });
 }

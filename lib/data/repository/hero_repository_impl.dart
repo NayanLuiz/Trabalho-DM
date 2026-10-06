@@ -68,17 +68,20 @@ class HeroRepositoryImpl implements HeroRepository {
     try {
       remoteRows = await apiClient.getHeroes(page: page, limit: limit);
     } catch (_) {
-      if (localRows.isEmpty) {
-        // Primeira instalação em outro celular: preencher SQLite com o mesmo
-        // JSON servido pelo json-server, sem criar outra camada de dados.
+      var seeded = false;
+      try {
+        // Completa também um cache parcial, preservando bônus já salvos.
         await _seedBundledHeroes();
+        seeded = true;
+      } catch (_) {
+        if (localRows.isEmpty) rethrow;
       }
-      final rows = localRows.isEmpty
+      final rows = seeded
           ? await heroDao.selectAll(limit: limit, offset: offset)
           : localRows;
       if (rows.isEmpty && await heroDao.count() == 0) rethrow;
       _useLocalUntilRestart = true;
-      if (localRows.isEmpty) {
+      if (seeded) {
         await preferences.setStringList(
           pageKey,
           rows.map((hero) => hero.id.toString()).toList(),
